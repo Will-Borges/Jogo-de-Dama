@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        #divTabuleiro {
+            text-align: center;
+          
+            background-color: cadetblue;
+            border: solid 5px black ;
+            padding: 5px;
+            text-align: center;
+        }
+
+
+        .casa {
+            width: 100px;
+            height: 100px;
+            float: left;
+        }
+
+        .Preta {
+            background-color: black;
+
+        }
+
+        .Branca {
+            background-color: white;
+
+        }
+
+        .Letras{
+            width: 100px;
+            height: 100px;
+            float: left;
+
+        }
+        .NumerosLado{
+            padding: 5px;
+            margin-top: 40px; 
+            float: left;
+            
+            
+        }
+
+        .NumerosBase{
+            width: 100px;
+            float: left;
+        }
+
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="divTabuleiro">
+
+        <div id="Fileira8" class="clearfix">
+            <div id="a8" class="casa Preta">
+            </div>
+
+            <div id="b8" class="casa Branca">
+            </div>
+
+            <div id="c8" class="casa Preta">
+            </div>
+
+            <div id="d8" class="casa Branca">
+            </div>
+
+            <div id="e8" class="casa Preta">
+            </div>
+
+            <div id="f8" class="casa Branca">
+            </div>
+
+            <div id="g8" class="casa Preta">
+            </div>
+
+            <div id="h8" class="casa Branca">
+            </div>
+
+            <div class="NumerosLado">8</div>
+        </div>
+
+        <div id="Fileira7" class="clearfix">
+
+            <div id="a7" class="casa Branca">
+            </div>
+
+            <div id="b7" class="casa Preta">
+            </div>
+
+            <div id="c7" class="casa Branca">
+            </div>
+
+            <div id="d7" class="casa Preta">
+            </div>
+
+            <div id="e7" class="casa Branca">
+            </div>
+
+            <div id="f7" class="casa Preta">
+            </div>
+
+            <div id="g7" class="casa Branca">
+            </div>
+
+            <div id="h7" class="casa Preta">
+            </div>
+            <div class="NumerosLado">7</div>
+        </div>
+
+        <div id="Fileira6" class="clearfix">
+            <div id="a6" class="casa Preta">
+            </div>
+
+            <div id="b6" class="casa Branca">
+            </div>
+
+            <div id="c6" class="casa Preta">
+            </div>
+
+            <div id="d6" class="casa Branca">
+            </div>
+
+            <div id="e6" class="casa Preta">
+            </div>
+
+            <div id="f6" class="casa Branca">
+            </div>
+
+            <div id="g6" class="casa Preta">
+            </div>
+
+            <div id="h6" class="casa Branca">
+            </div>
+            <div class="NumerosLado">6</div>
+        </div>
+
+        <div id="Fileira5" class="clearfix">
+
+            <div id="a5" class="casa Branca">
+            </div>
+
+            <div id="b5" class="casa Preta">
+            </div>
+
+            <div id="c5" class="casa Branca">
+            </div>
+
+            <div id="d5" class="casa Preta">
+            </div>
+
+            <div id="e5" class="casa Branca">
+            </div>
+
+            <div id="f5" class="casa Preta">
+            </div>
+
+            <div id="g5" class="casa Branca">
+            </div>
+
+            <div id="h5" class="casa Preta">
+            </div>
+            <div class="NumerosLado">5</div>
+        </div>
+
+        <div id="Fileira4" class="clearfix">
+            <div id="a4" class="casa Preta">
+            </div>
+
+            <div id="b4" class="casa Branca">
+            </div>
+
+            <div id="c4" class="casa Preta">
+            </div>
+
+            <div id="d4" class="casa Branca">
+            </div>
+
+            <div id="e4" class="casa Preta">
+            </div>
+
+            <div id="f4" class="casa Branca">
+            </div>
+
+            <div id="g4" class="casa Preta">
+            </div>
+
+            <div id="h4" class="casa Branca">
+            </div>
+            <div class="NumerosLado">4</div>
+        </div>
+
+        <div id="Fileira3" class="clearfix">
+
+            <div id="a3" class="casa Branca">
+            </div>
+
+            <div id="b3" class="casa Preta">
+            </div>
+
+            <div id="c3" class="casa Branca">
+            </div>
+
+            <div id="d3" class="casa Preta">
+            </div>
+
+            <div id="e3" class="casa Branca">
+            </div>
+
+            <div id="f3" class="casa Preta">
+            </div>
+
+            <div id="g3" class="casa Branca">
+            </div>
+
+            <div id="h3" class="casa Preta">
+            </div>
+            <div class="NumerosLado">3</div>
+        </div>
+
+        <div id="Fileira2" class="clearfix">
+            <div id="a2" class="casa Preta">
+            </div>
+
+            <div id="b2" class="casa Branca">
+            </div>
+
+            <div id="c2" class="casa Preta">
+            </div>
+
+            <div id="d2" class="casa Branca">
+            </div>
+
+            <div id="e2" class="casa Preta">
+            </div>
+
+            <div id="f2" class="casa Branca">
+            </div>
+
+            <div id="g2" class="casa Preta">
+            </div>
+
+            <div id="h2" class="casa Branca">
+            </div>
+            <div class="NumerosLado">2</div>
+        </div>
+
+        <div id="Fileira1" class="clearfix">
+
+            <div id="a1" class="casa Branca">
+            </div>
+
+            <div id="b1" class="casa Preta">
+            </div>
+
+            <div id="c1" class="casa Branca">
+            </div>
+
+            <div id="d1" class="casa Preta">
+            </div>
+
+            <div id="e1" class="casa Branca">
+            </div>
+
+            <div id="f1" class="casa Preta">
+            </div>
+
+            <div id="g1" class="casa Branca">
+            </div>
+
+            <div id="h1" class="casa Preta">
+            </div>
+            <div class="NumerosLado">1</div>
+        </div>
+
+        <div id="FileiraLetras" class="clearfix">
+            <div class="NumerosBase">A</div>
+            <div class="NumerosBase">B</div>
+            <div class="NumerosBase">C</div>
+            <div class="NumerosBase">D</div>
+            <div class="NumerosBase">E</div>
+            <div class="NumerosBase">F</div>
+            <div class="NumerosBase">G</div>
+            <div class="NumerosBase">H</div>
+        </div>
+        
+
+    </div>
+
+
+</body>
+
+</html>
