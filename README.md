@@ -1,37 +1,18 @@
-# Jogo-de-Dama
+# Jogo de Dama
+O jogo de dama foi inciado em Setembro de 2018 e finalizado em novembro de 2018, com o total de 10 semanas de trabalho.
 
-## para comecar a usaro o repositorio na maquina local 
-### 1 - pelo terminal clone o repositorio 
- git clone https://github.com/WilliamBorg/Jogo-de-Dama.git
+### Como Jogar
+O jogo usa de base 2 jogadores, aonde um jogador tem as peças verdes e o outro jogador com as peças azuis.
 
+O jogador que conseguir eliminar todas as peças do outro jogar é considerado o ganhador da partida.
 
- ### 2 - entrar no na pasta 
- cd Jogo-de-dama
+### Como instalar
+- Primeiro faça um clone em seu repositorio
+- Faça o download do repositorio
+- Entre na pasta Jogo-De-Dama
+- Execute o Index.html
 
- ### 3 - abrir no visual code
- code .
-
-## para atualizar no servidor
-
-### 1 - para ver as alteracoes
-git -status
-
-### 2 - para adicionar as alteracoes
-git add <nome do arquivo >
-ou
-git add *
+#### Git
 
 
-### 3 - commitar alteracoes
-git commit -m"<nome da alteracao>"
-
-### 4 - mandar para o servidor 
-git push
-
-
-## atualizar o repositorio local 
-
-### 1 - atualizar
-git pull
-
-
+#### Jogar
