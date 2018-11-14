@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #divTabuleiro {
+            text-align: center;
+
+            background-color: skyblue;
+            border: solid 5px black;
+            padding: 5px;
+            text-align: center;
+        }
+
+
+        .casa {
+            width: 100px;
+            height: 100px;
+            float: left;
+        }
+
+        .Preta {
+            background-color: black;
+
+        }
+
+        .Branca {
+            background-color: white;
+
+        }
+
+        .Letras {
+            width: 100px;
+            height: 100px;
+            float: left;
+
+        }
+
+        .Numeroslinha {
+            padding: 5px;
+            margin-top: 40px;
+            float: left;
+
+
+        }
+
+        .NumerosBase {
+            width: 100px;
+            float: left;
+        }
+
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .bola {
+            width: 70px;
+            height: 70px;
+            padding-top: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <body onload="render()">
+
+        <div id="divTabuleiro">
+        </div>
+
+        <Script>
+
+            var jogo = {
+                matriz:
+                    [
+                        [{ val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }]
+                        , [{ val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }]
+                        , [{ val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }]
+                        , [{ val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }]
+                        , [{ val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }]
+                        , [{ val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }]
+                        , [{ val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }]
+                        , [{ val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }]
+                    ],
+                contador: 1,
+                selecionada: null
+            };
+
+
+            function render() {
+                var tabuleiro = document.querySelector("#divTabuleiro");
+                tabuleiro.innerHTML = "";
+                var numero = 1
+                var resultado = 0
+                for (var c = 0; c < 8; c++) {
+                    tabuleiro.innerHTML += `<div id="Fileira${c}" class="clearfix"></div>`
+                    for (var l = 0; l < 8; l++) {
+
+                        var linha = document.querySelector(`#Fileira${c}`);
+
+                        var mClass = "casa Branca";
+                        var conteudo = ""
+                        if (jogo.matriz[c][l].val !== "-") {
+                            var mClass = "casa Preta";
+                            if (jogo.matriz[c][l].val !== "?") {
+                                conteudo = `<img src="./${jogo.matriz[c][l].val}.png" alt=" " srcset="" class="bola">`
+                            }
+                        }
+
+
+                        linha.innerHTML += `<div c="${c}" l="${l}" ${jogo.matriz[c][l].sel ? "style='opacity: 0.6;'" : ""} onClick="jogada(this)" class="${mClass} c${c}l${l}">${conteudo}</div>`
+                    }
+                }
+            }
+
+            function retornainverte(e) {
+                if (jogo.contador % 2 === 0) {
+                    return { nome: "p1", val: +1 }
+                } else {
+                    return { nome: "p2", val: -1 }
+                }
+            }
+            function jogada(e) {
+
+                if (jogo.selecionada !== null) {
+
+
+                    if (segundoMovimento(e)) {
+                        desfazSelecao()
+                    }
+
+
+
+                } else {
+
+                    primeiroMovimento(e)
+                    abrirJogadas(jogo.selecionada)
+                }
+
+                //
+
+            }
+
+            function desfazSelecao() {
+                for (var c = 0; c < 8; c++) {
+                    for (var l = 0; l < 8; l++) {
+                        jogo.matriz[c][l].sel = false
+                    }
+                }
+                render()
+            }
+
+            function primeiroMovimento(e) {
+                if (retornainverte(e).nome === "p2") {
+                    //inverte 2
+
+                    if (getPedraSelecionada(e, -1).csl.casa.val !== 'p2') {
+                        alert("Não é a tua vez")
+                        return
+                    }
+
+                    jogo.selecionada = getPedraSelecionada(e, -1)
+                    console.log("selecionada", jogo.selecionada)
+
+
+                } else {
+                    //inverte 1
+
+                    if (getPedraSelecionada(e, +1).csl.casa.val !== 'p1') {
+                        alert("Não é a tua vez")
+                        return
+                    }
+                    jogo.selecionada = getPedraSelecionada(e, +1)
+
+                    console.log("selecionada", jogo.selecionada)
+                }
+
+
+            }
+
+            function segundoMovimento(e) {
+
+                var segundaJogada = getPedraSelecionada(e, retornainverte(e).val)
+
+                if (!segundaJogada.csl.casa.sel) {
+                    alert("tu nao pode ir ai poh!")
+                    return false
+                }
+
+
+
+                if (segundaJogada.csl.casa.val === "?" && jogo.selecionada.cfd.casa.val !== "?" && jogo.selecionada.cfd.casa.val !== jogo.selecionada.csl.casa.val) {
+
+                    jogo.matriz[jogo.selecionada.cfd.c][jogo.selecionada.cfd.l].val = "?"
+                }
+
+                if (segundaJogada.csl.casa.val === "?" && jogo.selecionada.cfe.casa.val !== "?" && jogo.selecionada.cfe.casa.val !== jogo.selecionada.csl.casa.val) {
+
+                    jogo.matriz[jogo.selecionada.cfe.c][jogo.selecionada.cfe.l].val = "?"
+                }
+
+
+
+
+                if (segundaJogada.csl.casa.val === "?") {
+
+                    jogo.matriz[segundaJogada.csl.c][segundaJogada.csl.l].val = jogo.selecionada.csl.casa.val
+                    jogo.matriz[jogo.selecionada.csl.c][jogo.selecionada.csl.l].val = "?"
+
+                }
+
+                jogo.selecionada = null
+                jogo.contador++
+
+                return true
+            }
+
+
+            function abrirJogadas(pedra) {
+
+                if (pedra === null) {
+                    return
+                }
+
+                if (pedra.cfd.casa.val === "?") {
+                    jogo.matriz[pedra.cfd.c][pedra.cfd.l].sel = true
+                }
+                if (pedra.cfe.casa.val === "?") {
+                    jogo.matriz[pedra.cfe.c][pedra.cfe.l].sel = true
+                }
+
+                if (pedra.cfe.casa.val !== "?" && pedra.cfe.casa.val !== pedra.csl.casa.val && pedra.cffe.casa.val === "?") {
+                    jogo.matriz[pedra.cffe.c][pedra.cffe.l].sel = true
+                }
+
+                if (pedra.cfd.casa.val !== "?" && pedra.cfd.casa.val !== pedra.csl.casa.val && pedra.cffd.casa.val === "?") {
+                    jogo.matriz[pedra.cffd.c][pedra.cffd.l].sel = true
+                }
+
+                render()
+
+            }
+
+            function isIndexValid(idx) {
+                return (idx >= 0 && idx <= 7)
+
+            }
+
+            function getPedraSelecionada(e, inverte) {
+                var pedra = {};
+
+                var coluna = Number(e.getAttribute("c"));
+                var linha = Number(e.getAttribute("l"));
+
+                if (isIndexValid(coluna) && isIndexValid(linha)) {
+                    pedra.csl = { casa: jogo.matriz[coluna][linha], c: coluna, l: linha }
+                } else {
+                    pedra.csl = null
+                }
+
+                var auxColuna = coluna + inverte
+                var auxLinhaDireita = linha + 1
+                var auxLinhaEsquerda = linha - 1
+
+                if (isIndexValid(auxColuna) && isIndexValid(auxLinhaDireita)) {
+                    pedra.cfd = { casa: jogo.matriz[auxColuna][auxLinhaDireita], c: auxColuna, l: auxLinhaDireita }
+                } else {
+                    pedra.cfd = null
+                }
+
+                if (isIndexValid(auxColuna) && isIndexValid(auxLinhaEsquerda)) {
+                    pedra.cfe = { casa: jogo.matriz[auxColuna][auxLinhaEsquerda], c: auxColuna, l: auxLinhaEsquerda }
+                } else {
+                    pedra.cfe = null
+                }
+
+                var auxColunaFF = coluna + (inverte * 2)
+                var auxLinhaDireitaFF = linha + 2
+                var auxLinhaEsquerdaFF = linha - 2
+
+                if (isIndexValid(auxColunaFF) && isIndexValid(auxLinhaDireitaFF)) {
+                    pedra.cffd = { casa: jogo.matriz[auxColunaFF][auxLinhaDireitaFF], c: auxColunaFF, l: auxLinhaDireitaFF }
+                } else {
+                    pedra.cffd = null
+                }
+
+                if (isIndexValid(auxColunaFF) && isIndexValid(auxLinhaEsquerdaFF)) {
+                    pedra.cffe = { casa: jogo.matriz[auxColunaFF][auxLinhaEsquerdaFF], c: auxColunaFF, l: auxLinhaEsquerdaFF }
+                } else {
+                    pedra.cffe = null
+                }
+
+
+
+                return pedra;
+
+
+            }
+
+            function movimentoP1(e) {
+
+                // MOVIMENTO 
+                //         matriz[2][4]
+                //           [2] +1 para o movimento para coluna
+                //           [4] +1 para a direita ou [4] -1 para a esquerda
+
+                var coluna = Number(e.getAttribute("l"))
+                var linha = Number(e.getAttribute("c"))
+                //  matriz[coluna][linha] = "?"
+
+                //Verifica se vc clica no selecionado
+                if (e.getAttribute("style") === "opacity: 0.6;") {
+                    matriz[coluna][linha] = "p1"
+                    matriz[pedra.cfd.casa.val] = "?"
+                    //      matriz[cld][linha] = "?" ------------------------------------------------------------------------------------------------------
+                    return
+                }
+
+
+                //Movimento p1
+                if (matriz[coluna][linha] === "p1") {
+
+                    Direita = linha + 1
+                    Esquerda = linha - 1
+                    coluna = coluna + 1
+                    matriz[coluna][linha] = "?"
+
+                    if (coluna <= 8) {
+
+                        //IF MAE DOS "2" MAIORES Q ZERO 
+                        if (Esquerda >= 0 && Direita >= 0) {
+
+
+                            if (matriz[coluna][Direita] === "?") {
+
+                                document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                            }
+
+                            if (matriz[coluna][Esquerda] === "?") {
+
+                                document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+                            }
+                        }
+
+                        if (matriz[coluna][Esquerda] === "p2") {
+
+                            if (matriz[coluna + 1][Esquerda + 1] === "?") {
+
+                                document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                            }
+                        }
+
+                        if (matriz[coluna + 1][Direita + 1] === "?") {
+
+                            document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                        }
+
+                    }
+
+                    if (matriz[coluna][Direita] === "p2") {
+
+                        if (matriz[coluna + 1][Esquerda + 1] === "?") {
+
+                            document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                        }
+
+                        if (matriz[coluna + 1][Direita + 1] === "?") {
+
+                            document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                        }
+
+                    }
+
+                } //FECHAMENTO IF MAE DOS "2" MAIORES Q ZERO 
+
+
+                // IF SÓ DIREITA MAIOR Q ZERO
+                if (Esquerda < 0 && Direita >= 0) {
+
+                    Direita = linha + 1
+                    Esquerda = linha - 1
+                    coluna = coluna + 1
+                    matriz[coluna][linha] = "?"
+
+                    if (matriz[coluna][Direita] === "?") {
+
+                        document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                    }
+
+                    if (matriz[coluna + 1][Direita + 1] === "?") {
+
+                        document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                    }
+
+
+                    if (matriz[coluna][Direita] === "p2") {
+
+                        if (matriz[coluna + 1][Direita + 1] === "?") {
+                            document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                        }
+
+                    }
+
+                } //FECHAMENTO IF SÓ DIREITA MAIOR Q ZERO
+
+
+
+                //  IF SÓ ESQUERDA MAIOR Q ZERO
+                if (Esquerda >= 0 && Direita < 0) {
+
+                    Direita = linha + 1
+                    Esquerda = linha - 1
+                    coluna = coluna + 1
+                    matriz[coluna][linha] = "?"
+
+
+                    if (matriz[coluna][Esquerda] === "?") {
+
+                        document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+
+                    }
+
+                    if (matriz[coluna][Esquerda] === "p2") {
+
+                        if (matriz[coluna + 1][Esquerda + 1] === "?") {
+
+                            document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+
+                        }
+
+
+
+                    }//Fechamento da verificação se o movimento pra coluna nao é 9 
+
+
+
+
+                } //FECHAMENTO  IF SÓ ESQUERDA MAIOR Q ZERO
+            }//Fechamento jogada p1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            function MovimentoP2() {
+
+
+                var coluna = Number(e.getAttribute("l"))
+                var linha = Number(e.getAttribute("c"))
+                //  matriz[coluna][linha] = "?"
+
+                //Verifica se vc clica no selecionado
+                if (e.getAttribute("style") === "opacity: 0.6;") {
+                    matriz[coluna][linha] = "p2"
+
+                    carregaTabela2()
+                    return
+                }
+
+
+
+                //Movimento p2
+                if (matriz[coluna][linha] === "p2") {
+
+                    Direita = linha + 1
+                    Esquerda = linha - 1
+                    coluna = coluna - 1
+                    matriz[coluna][linha] = "?"
+
+                    //Verifica se o movimento nao sai da tabela
+                    if (coluna >= 0) {
+
+
+                        //IF MAE DOS "2" MAIORES Q ZERO 
+                        if (Esquerda >= 0 && Direita >= 0) {
+
+
+                            if (matriz[coluna][Direita] === "?") {
+
+                                document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                            }
+
+                            if (matriz[coluna][Esquerda] === "?") {
+
+                                document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                            }
+
+                            if (matriz[coluna][Esquerda] === "p1") {
+
+                                if (matriz[coluna + 1][Esquerda + 1] === "?") {
+
+                                    document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                                if (matriz[coluna + 1][Direita + 1] === "?") {
+
+                                    document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                            }
+                            p1
+                            if (matriz[coluna][Direita] === "p1") {
+
+                                if (matriz[coluna + 1][Esquerda + 1] === "?") {
+
+                                    document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                                if (matriz[coluna + 1][Direita + 1] === "?") {
+
+                                    document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                            } //FECHAMENTO IF MAE DOS "2" MAIORES Q ZERO 
+
+
+                            // IF SÓ DIREITA MAIOR Q ZERO
+                            if (Esquerda < 0 && Direita >= 0) {
+
+                                Direita = linha + 1
+                                Esquerda = linha - 1
+                                coluna = coluna - 1
+                                matriz[coluna][linha] = "?"
+
+                                if (matriz[coluna][Direita] === "?") {
+
+                                    document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                                if (matriz[coluna + 1][Direita + 1] === "?") {
+
+                                    document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+
+                                if (matriz[coluna][Direita] === "p1") {
+
+                                    if (matriz[coluna + 1][Direita + 1] === "?") {
+                                        document.querySelector(`.c${coluna}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+                                }
+
+                            } //FECHAMENTO IF SÓ DIREITA MAIOR Q ZERO
+
+
+
+                            //  IF SÓ ESQUERDA MAIOR Q ZERO
+                            if (Esquerda >= 0 && Direita < 0) {
+
+                                Direita = linha + 1
+                                Esquerda = linha - 1
+                                coluna = coluna - 1
+                                matriz[coluna][linha] = "?"
+
+                                if (matriz[coluna][Esquerda] === "?") {
+
+                                    document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                                if (matriz[coluna][Esquerda] === "p1") {
+
+                                    if (matriz[coluna + 1][Esquerda + 1] === "?") {
+
+                                        document.querySelector(`.c${coluna}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+                                }
+
+                            }//FECHAMENTO  IF SÓ ESQUERDA MAIOR Q ZERO
+
+
+                        }
+                    }
+                }//Fecha a verificação se esta dentro da tabela a movimentação pra coluna
+            }//Fechamento jogada p2
+
+        </script>
+
+    </body>
+
+</html>
