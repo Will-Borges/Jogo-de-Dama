@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        #divTabuleiro {
+            text-align: center;
+
+            background-color: skyblue;
+            border: solid 5px black;
+            padding: 5px;
+            text-align: center;
+        }
+
+
+        .casa {
+            width: 100px;
+            height: 100px;
+            float: left;
+        }
+
+        .Preta {
+            background-color: black;
+
+        }
+
+        .Branca {
+            background-color: white;
+
+        }
+
+        .Letras {
+            width: 100px;
+            height: 100px;
+            float: left;
+
+        }
+
+        .NumerosLado {
+            padding: 5px;
+            margin-top: 40px;
+            float: left;
+
+
+        }
+
+        .NumerosBase {
+            width: 100px;
+            float: left;
+        }
+
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .bola {
+            width: 70px;
+            height: 70px;
+            padding-top: 14px;
+        }
+    </style>
+</head>
+
+<body onload="render()">
+
+    <div id="divTabuleiro">
+    </div>
+
+    <Script>
+
+        var jogo = {
+            matriz:
+                [
+                    [{ val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }]
+                    , [{ val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }]
+                    , [{ val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }, { val: "p1", sel: false }, { val: "-", sel: false }]
+                    , [{ val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }]
+                    , [{ val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }, { val: "?", sel: false }, { val: "-", sel: false }]
+                    , [{ val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }]
+                    , [{ val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }]
+                    , [{ val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }, { val: "-", sel: false }, { val: "p2", sel: false }]
+                ],
+            contador: 1,
+            selecionada: null
+        };
+
+
+        function render() {
+            var tabuleiro = document.querySelector("#divTabuleiro");
+            tabuleiro.innerHTML = "";
+            var numero = 1
+            var resultado = 0
+            for (var l = 0; l < 8; l++) {
+                tabuleiro.innerHTML += `<div id="Fileira${l}" class="clearfix"></div>`
+                for (var c = 0; c < 8; c++) {
+
+                    var linha = document.querySelector(`#Fileira${l}`);
+
+                    var mClass = "casa Branca";
+                    var conteudo = ""
+                    if (jogo.matriz[l][c].val !== "-") {
+                        var mClass = "casa Preta";
+                        if (jogo.matriz[l][c].val !== "?") {
+
+                            conteudo = `<img src="./${jogo.matriz[l][c].val}.png" alt=" " srcset="" class="bola">`
+                        }
+                    }
+
+
+                    linha.innerHTML += `<div l="${l}" c="${c}" ${jogo.matriz[l][c].sel ? "style='opacity: 0.6;'" : ""} onClick="jogada(this)" class="${mClass} c${l}l${c}">${conteudo}</div>`
+                }
+            }
+        }
+
+        function retornaJogador(e) {
+            if (jogo.contador % 2 === 0) {
+                return { nome: "p1", val: +1 }
+            } else {
+                return { nome: "p2", val: -1 }
+            }
+        }
+        function jogada(e) {
+
+            if (jogo.selecionada !== null) {
+
+
+                segundoMovimento(e)
+          
+                desfazSelecao()
+
+            } else {
+
+                primeiroMovimento(e)
+                abrirJogadas(jogo.selecionada)
+            }
+
+            //
+
+        }
+
+        function desfazSelecao() {
+            for (var l = 0; l < 8; l++) {
+                for (var c = 0; c < 8; c++) {
+                    jogo.matriz[l][c].sel = false
+                }
+            }
+            render()
+        }
+
+        function primeiroMovimento(e) {
+            if (retornaJogador(e).nome === "p2") {
+                //jogador 2
+                if (getPedraSelecionada(e, -1).csl.casa.val !== 'p2') {
+                    console.log("casa selecionada errada")
+                    return
+                }
+
+                jogo.selecionada = getPedraSelecionada(e, -1)
+                console.log("selecionada", jogo.selecionada)
+
+
+            } else {
+                //jogador 1
+
+                if (getPedraSelecionada(e, +1).csl.casa.val !== 'p1') {
+                    console.log("casa selecionada errada")
+                    return
+                }
+                jogo.selecionada = getPedraSelecionada(e, +1)
+
+                console.log("selecionada", jogo.selecionada)
+            }
+
+
+        }
+
+        function segundoMovimento(e){
+
+            var segundaJogada = getPedraSelecionada(e, retornaJogador(e).val)
+
+            if (segundaJogada.csl.casa.val === "?"){
+                jogo.matriz[segundaJogada.csl.c][segundaJogada.csl.l].val = segundaJogada.csl.casa.nome
+                jogo.matriz[jogo.selecionada.csl.c][jogo.selecionada.csl.l].val = "?"
+            }
+
+            jogo.selecionada = null
+            jogo.contador++
+        }
+
+
+        function abrirJogadas(pedra) {
+            
+            if (pedra.cfd.casa.val === "?") {
+                jogo.matriz[pedra.cfd.l][pedra.cfd.c].sel = true
+            }
+            if (pedra.cfe.casa.val === "?") {
+                jogo.matriz[pedra.cfe.l][pedra.cfe.c].sel = true
+            }
+            render()
+
+        }
+
+        function getPedraSelecionada(e, jogador) {
+            var frente = Number(e.getAttribute("l"));
+            var lado = Number(e.getAttribute("c"));
+            return {
+                cfe: { casa: jogo.matriz[frente + jogador][lado - 1], l: frente + jogador, c: lado - 1 },
+                cfd: { casa: jogo.matriz[frente + jogador][lado + 1], l: frente + jogador, c: lado + 1 },
+                csl: { casa: jogo.matriz[frente][lado], l: frente, c: lado }
+            }
+
+
+
+        }
+        function movimento(e) {
+
+            //Verifica se vc clica no selecionado
+            if (e.getAttribute("style") === "opacity: 0.6;") {
+                jogo.matriz[frente][lado].val = "p1"
+
+                render()
+                return
+            }
+
+        }
+
+
+        function movimento_old() {
+            
+            var jogador;
+            jogador = contador % 2
+
+            if (jogador === 1) {
+
+                function movimentoP1(e) {
+
+                    // MOVIMENTO 
+                    //         matriz[2][4]
+                    //           [2] +1 para o movimento para frente
+                    //           [4] +1 para a direita ou [4] -1 para a esquerda
+
+                    var frente = Number(e.getAttribute("l"))
+                    var lado = Number(e.getAttribute("c"))
+                    //  matriz[frente][lado] = "?"
+
+
+                    //Verifica se vc clica no selecionado
+                    if (e.getAttribute("style") === "opacity: 0.6;") {
+                        matriz[frente][lado] = "p1"
+
+                        carregaTabela()
+                        return
+                    }
+
+
+                    //Movimento p1
+                    if (matriz[frente][lado] === "p1") {
+
+                        Direita = lado + 1
+                        Esquerda = lado - 1
+                        Frente = frente + 1
+                        matriz[frente][lado] = "?"
+                        if (Frente <= 8) {
+
+                            //IF MAE DOS "2" MAIORES Q ZERO 
+                            if (Esquerda >= 0 && Direita >= 0) {
+
+
+                                if (matriz[Frente][Direita] === "?") {
+
+                                    document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                                if (matriz[Frente][Esquerda] === "?") {
+
+                                    document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+                                }
+                            }
+
+                            if (matriz[Frente][Esquerda] === "p2") {
+
+                                if (matriz[Frente + 1][Esquerda + 1] === "?") {
+
+                                    document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+                            }
+
+                            if (matriz[Frente + 1][Direita + 1] === "?") {
+
+                                document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                            }
+
+                        }
+
+                        if (matriz[Frente][Direita] === "p2") {
+
+                            if (matriz[Frente + 1][Esquerda + 1] === "?") {
+
+                                document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                            }
+
+                            if (matriz[Frente + 1][Direita + 1] === "?") {
+
+                                document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                            }
+
+                        }
+
+                    } //FECHAMENTO IF MAE DOS "2" MAIORES Q ZERO 
+
+
+                    // IF SÓ DIREITA MAIOR Q ZERO
+                    if (Esquerda < 0 && Direita >= 0) {
+
+                        Direita = lado + 1
+                        Esquerda = lado - 1
+                        Frente = frente + 1
+                        matriz[frente][lado] = "?"
+
+                        if (matriz[Frente][Direita] === "?") {
+
+                            document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                        }
+
+                        if (matriz[Frente + 1][Direita + 1] === "?") {
+
+                            document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                        }
+
+
+                        if (matriz[Frente][Direita] === "p2") {
+
+                            if (matriz[Frente + 1][Direita + 1] === "?") {
+                                document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                            }
+
+                        }
+
+                    } //FECHAMENTO IF SÓ DIREITA MAIOR Q ZERO
+
+
+
+                    //  IF SÓ ESQUERDA MAIOR Q ZERO
+                    if (Esquerda >= 0 && Direita < 0) {
+
+                        Direita = lado + 1
+                        Esquerda = lado - 1
+                        Frente = frente + 1
+                        matriz[frente][lado] = "?"
+
+                        if (matriz[Frente][Esquerda] === "?") {
+
+                            document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+
+                        }
+
+                        if (matriz[Frente][Esquerda] === "p2") {
+
+                            if (matriz[Frente + 1][Esquerda + 1] === "?") {
+
+                                document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+
+                            }
+
+
+
+                        }//Fechamento da verificação se o movimento pra frente nao é 9 
+
+
+
+
+                    } //FECHAMENTO  IF SÓ ESQUERDA MAIOR Q ZERO
+                    contador++
+                }//Fechamento jogada p1
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            else {
+
+                function MovimentoP2() {
+
+
+                    var frente = Number(e.getAttribute("l"))
+                    var lado = Number(e.getAttribute("c"))
+                    //  matriz[frente][lado] = "?"
+
+                    //Verifica se vc clica no selecionado
+                    if (e.getAttribute("style") === "opacity: 0.6;") {
+                        matriz[frente][lado] = "p2"
+
+                        carregaTabela2()
+                        return
+                    }
+
+
+
+                    //Movimento p2
+                    if (matriz[frente][lado] === "p2") {
+
+                        Direita = lado + 1
+                        Esquerda = lado - 1
+                        Frente = frente - 1
+                        matriz[frente][lado] = "?"
+
+                        //Verifica se o movimento nao sai da tabela
+                        if (Frente >= 0) {
+
+
+                            //IF MAE DOS "2" MAIORES Q ZERO 
+                            if (Esquerda >= 0 && Direita >= 0) {
+
+
+                                if (matriz[Frente][Direita] === "?") {
+
+                                    document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                                if (matriz[Frente][Esquerda] === "?") {
+
+                                    document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                }
+
+                                if (matriz[Frente][Esquerda] === "p1") {
+
+                                    if (matriz[Frente + 1][Esquerda + 1] === "?") {
+
+                                        document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+                                    if (matriz[Frente + 1][Direita + 1] === "?") {
+
+                                        document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+                                }
+                                p1
+                                if (matriz[Frente][Direita] === "p1") {
+
+                                    if (matriz[Frente + 1][Esquerda + 1] === "?") {
+
+                                        document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+                                    if (matriz[Frente + 1][Direita + 1] === "?") {
+
+                                        document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+                                } //FECHAMENTO IF MAE DOS "2" MAIORES Q ZERO 
+
+
+                                // IF SÓ DIREITA MAIOR Q ZERO
+                                if (Esquerda < 0 && Direita >= 0) {
+
+                                    Direita = lado + 1
+                                    Esquerda = lado - 1
+                                    Frente = frente - 1
+                                    matriz[frente][lado] = "?"
+
+                                    if (matriz[Frente][Direita] === "?") {
+
+                                        document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+                                    if (matriz[Frente + 1][Direita + 1] === "?") {
+
+                                        document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+
+                                    if (matriz[Frente][Direita] === "p1") {
+
+                                        if (matriz[Frente + 1][Direita + 1] === "?") {
+                                            document.querySelector(`.c${Frente}l${Direita}`).setAttribute("style", "opacity: 0.6;")
+
+                                        }
+
+                                    }
+
+                                } //FECHAMENTO IF SÓ DIREITA MAIOR Q ZERO
+
+
+
+                                //  IF SÓ ESQUERDA MAIOR Q ZERO
+                                if (Esquerda >= 0 && Direita < 0) {
+
+                                    Direita = lado + 1
+                                    Esquerda = lado - 1
+                                    Frente = frente - 1
+                                    matriz[frente][lado] = "?"
+
+                                    if (matriz[Frente][Esquerda] === "?") {
+
+                                        document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                    }
+
+                                    if (matriz[Frente][Esquerda] === "p1") {
+
+                                        if (matriz[Frente + 1][Esquerda + 1] === "?") {
+
+                                            document.querySelector(`.c${Frente}l${Esquerda}`).setAttribute("style", "opacity: 0.6;")
+
+                                        }
+
+                                    }
+
+                                }//FECHAMENTO  IF SÓ ESQUERDA MAIOR Q ZERO
+
+
+                            }
+                        }
+                    }//Fecha a verificação se esta dentro da tabela a movimentação pra frente
+                    contador++
+                }//Fechamento jogada p2
+            }//fechamento else contador
+        }//fechamento funcion movimento
+
+    </Script>
+</body>
+
+</html>
