@@ -1,6 +1,9 @@
 # Jogo de Dama
+
 O jogo de dama foi inciado em Setembro de 2018 e finalizado em novembro de 2018, com o total de 10 semanas de trabalho.
+
 ![](https://raw.githubusercontent.com/WilliamBorg/Jogo-de-Dama/master/imgs/demo.gif)
+
 [Demo](https://jogo-de-dama-eexishrjog.now.sh/)
 
 ### Como Jogar
@@ -14,7 +17,3 @@ O jogador que conseguir eliminar todas as peças do outro jogar é considerado o
 - Entre na pasta Jogo-De-Dama
 - Execute o Index.html
 
-#### Git
-
-
-#### Jogar
